@@ -1,8 +1,8 @@
 Using HorizonSideRobots
 r = Robot(animate = true)
 function mark_all(r::Robot)
-    nun_vert = get_num_steps_movements!(r,Sud)
-    nun_hor = get_num_steps_movements!(r,West)
+    nun_vert = moves!(r,Sud)
+    nun_hor = moves!(r,West)
     side = Ost
     mark_row!(r,side)
     while isborder!(r,Nord)==false
@@ -13,4 +13,12 @@ function mark_all(r::Robot)
     movements!(r,West)
     movemens!(r,Ost,num_hor)
     movemens!(r,Nord,num_vert)
+end
+function moves!(r::Robot, side:HorizonSide)
+  num_steps = 0
+  while isborder(r, side) == false
+    move!(r, side)
+    num_steps +=1
+  end
+  return num_steps
 end

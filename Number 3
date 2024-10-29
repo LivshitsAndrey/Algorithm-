@@ -4,16 +4,18 @@ r = Robot(animate = True)
 mark_frame_area(r::Robot)
   num_vert = moves!(r, Sud)
   num_hor = moves!(r, West)
-  while side > 0
+  while isborder!(r, side) == false
     for side in (Nord, Ost, Sud, West)
       putmarkers!(r, side)
+      move_by_markers(r, inverse(side))
     end
-    side -=1
+    move!(r, Nord)
+    move!(r, Ost)
   end
   moves!(r, Nord, num_vert)
   moves!(r, Ost, num_hor)
 end
-function moves!(r::Robot, side:HorizonSide)
+function moves!(r::Robot, side:HorizonSide) =
   num_steps = 0
   while isborder(r, side) == false
     move!(r, side)
@@ -21,14 +23,19 @@ function moves!(r::Robot, side:HorizonSide)
   end
   return num_steps
 end
-function moves!(r::Robot, side:HorizonSide, num_steps::Int)
+function moves!(r::Robot, side:HorizonSide, num_steps::Int) =
   for _ in 1:num_steps
     move!(r,side)
   end
 end
-function putmarkers!(r::Robot, side::HorizonSide)
+function putmarkers!(r::Robot, side::HorizonSide) =
   while isborder(r, side) == false
     move(r,side)
     putmarker(r)
   end
 end
+function move_by_markers(r::Robot, side::HorizonSide) =
+  while ismarker(r) == true
+    move!(r, side)
+  end
+inverse(side::HorizonSide) = HorizonSide(mod(Int(side) + 2, 4))
